@@ -1,68 +1,55 @@
 package com.example.shoppingscanner
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.shoppingscanner.databinding.FragmentBarcodeScannerBinding
+import com.example.shoppingscanner.model.BarcodeResponse
+import com.example.shoppingscanner.network.BarcodeService
+import com.google.mlkit.vision.barcode.BarcodeScanner
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions
+import com.google.mlkit.vision.barcode.BarcodeScanning
+import com.google.mlkit.vision.barcode.common.Barcode
+import com.google.mlkit.vision.common.InputImage
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
-/**
- * An example full-screen fragment that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
+
+
 class BarcodeScannerFragment : Fragment() {
-    private val hideHandler = Handler(Looper.myLooper()!!)
-
     @Suppress("InlinedApi")
-    private val hidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
-
-        // Note that some of these constants are new as of API 16 (Jelly Bean)
-        // and API 19 (KitKat). It is safe to use them, as they are inlined
-        // at compile-time and do nothing on earlier devices.
-        val flags =
-            View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                    View.SYSTEM_UI_FLAG_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        activity?.window?.decorView?.systemUiVisibility = flags
-        (activity as? AppCompatActivity)?.supportActionBar?.hide()
-    }
-    private val showPart2Runnable = Runnable {
-        // Delayed display of UI elements
-        fullscreenContentControls?.visibility = View.VISIBLE
-    }
     private var visible: Boolean = false
-    private val hideRunnable = Runnable { hide() }
-
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private val delayHideTouchListener = View.OnTouchListener { _, _ ->
-        if (AUTO_HIDE) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS)
-        }
-        false
-    }
-
-    private var dummyButton: Button? = null
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
     private var _binding: FragmentBarcodeScannerBinding? = null
+    private var addToCartButton: Button? = null
+    private var buyNowButton: Button? = null
+    private var cameraPreview: ImageView? = null
+    private var productText:TextView? = null
+    private var priceText:TextView? = null
+    private var totalPriceText:TextView? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var barcodeScannerOptions: BarcodeScannerOptions? = null
+    private var barcodeScanner: BarcodeScanner? = null
+
+    private var imageBitmap:Bitmap? = null //
+    private val REQUEST_IMAGE_CAPTURE=1 //
+
+
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -72,113 +59,170 @@ class BarcodeScannerFragment : Fragment() {
     ): View? {
 
         _binding = FragmentBarcodeScannerBinding.inflate(inflater, container, false)
+
+        cameraPreview = binding.cameraPreview
+
+        productText = binding.productName
+        priceText = binding.productPrice
+        totalPriceText = binding.totalPrice
+
+
+        buyNowButton = binding.btnbuynow
+        addToCartButton = binding.btnaddtocart
+
+        barcodeScannerOptions = BarcodeScannerOptions.Builder()
+            .setBarcodeFormats(
+                Barcode.FORMAT_ALL_FORMATS)
+            .build()
+
+        barcodeScanner = BarcodeScanning.getClient(barcodeScannerOptions!!)
+
         return binding.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         visible = true
 
-        dummyButton = binding.dummyButton
-        fullscreenContent = binding.fullscreenContent
-        fullscreenContentControls = binding.fullscreenContentControls
-        // Set up the user interaction to manually show or hide the system UI.
-        fullscreenContent?.setOnClickListener { toggle() }
+        takeImage()
+        
+        navigate(buyNowButton!!)
+        navigate(addToCartButton!!)
 
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        dummyButton?.setOnTouchListener(delayHideTouchListener)
+    }
+    private fun takeImage()
+    {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try{
+            startActivityForResult(intent,REQUEST_IMAGE_CAPTURE)
+        } catch (e:Exception){
+            Log.e("Error taking image",e.message.toString())
+            showToast("Please try again.")
+        }
+    }
+    private fun processImage() {
+        if (imageBitmap!=null){
+            val inputImage = InputImage.fromBitmap(imageBitmap!!,0)
+            val scanner = BarcodeScanning.getClient(barcodeScannerOptions!!)
+            scanner.process(inputImage)
+                .addOnSuccessListener { barcodes ->
+
+                    if (barcodes.toString() == "[]") {
+                        showToast("No barcode found")
+                    }
+
+                    for (barcode in barcodes) {
+                        Log.d("raw", barcode.rawValue.toString())
+                        
+                        getProductDetails(barcode.rawValue.toString())
+                    }
+                }
+                .addOnFailureListener {
+
+                }
+        }
+        else{
+            showToast("Please take an image")
+        }
+    }
+
+    private fun getProductDetails(barcode: String) {
+        Log.d("product details", barcode)
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://www.barkodoku.com/ws/")
+            .addConverterFactory(SimpleXmlConverterFactory.create())
+            .build()
+
+
+        val service: BarcodeService = retrofit.create(BarcodeService::class.java)
+
+        val apiKey = "17eb1a1af4ef0440c6f571d1dba4718e1068fb498c00bd91f9d7a472e2e0ff6c"
+
+        val call = service.getProductDetails(apiKey, barcode)
+
+        call.enqueue(object : Callback<BarcodeResponse> {
+
+            override fun onResponse(
+                call: Call<BarcodeResponse>,
+                response: Response<BarcodeResponse>
+            ) {
+                Log.d("response", response.toString())
+                if (response.isSuccessful) {
+                    Log.d("response successfull", response.body().toString())
+                    val barcodeResponse = response.body()
+
+                    val productBarcode = barcodeResponse?.BarkodGetirResult?.UrunBarkod
+                    if (productBarcode != null) {
+                        Log.d("barcode", productBarcode.toString())
+                        val productName = productBarcode.UrunAd
+                        val productPrice = productBarcode.UrunDetay
+
+                        Log.d("name", productName.toString())
+                        Log.d("price", productPrice.toString())
+
+                        productText!!.text = productText!!.text.toString() + " " + productName
+                        priceText!!.text = priceText!!.text.toString() + " " + productPrice
+
+                        productText!!.invalidate()
+                        priceText!!.invalidate()
+                    } else {
+                        showToast("No product found")
+                        Log.e("no product", response.message())
+                    }
+                } else {
+                    Log.e("Error", response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<BarcodeResponse>, t: Throwable) {
+                Log.e("Onfailure", t.message.toString())
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode==REQUEST_IMAGE_CAPTURE && resultCode== RESULT_OK){
+            val extras: Bundle? = data?.extras
+            imageBitmap= extras?.get("data") as Bitmap
+
+            if (imageBitmap!=null) {
+                binding.cameraPreview.setImageBitmap(imageBitmap)
+                Log.d("onactivityresult","Image not null")
+                processImage()
+            }
+        }
+    }
+
+    fun navigate(button: Button){
+        button.setOnClickListener(){
+            val fragment = CartFragment()
+            button!!.visibility = View.GONE
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.barcodeScannerFragment, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
+    }
+
+    fun showToast(message:String){
+        Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
     }
 
     override fun onResume() {
         super.onResume()
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        // Trigger the initial hide() shortly after the activity has been
-        // created, to briefly hint to the user that UI controls
-        // are available.
-        delayedHide(100)
     }
 
-    override fun onPause() {
-        super.onPause()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-
-        // Clear the systemUiVisibility flag
-        activity?.window?.decorView?.systemUiVisibility = 0
-        show()
-    }
 
     override fun onDestroy() {
         super.onDestroy()
-        dummyButton = null
+        buyNowButton = null
+        addToCartButton = null
         fullscreenContent = null
         fullscreenContentControls = null
     }
 
-    private fun toggle() {
-        if (visible) {
-            hide()
-        } else {
-            show()
-        }
-    }
-
-    private fun hide() {
-        // Hide UI first
-        fullscreenContentControls?.visibility = View.GONE
-        visible = false
-
-        // Schedule a runnable to remove the status and navigation bar after a delay
-        hideHandler.removeCallbacks(showPart2Runnable)
-        hideHandler.postDelayed(hidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    @Suppress("InlinedApi")
-    private fun show() {
-        // Show the system bar
-        fullscreenContent?.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        visible = true
-
-        // Schedule a runnable to display UI elements after a delay
-        hideHandler.removeCallbacks(hidePart2Runnable)
-        hideHandler.postDelayed(showPart2Runnable, UI_ANIMATION_DELAY.toLong())
-        (activity as? AppCompatActivity)?.supportActionBar?.show()
-    }
-
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
-    private fun delayedHide(delayMillis: Int) {
-        hideHandler.removeCallbacks(hideRunnable)
-        hideHandler.postDelayed(hideRunnable, delayMillis.toLong())
-    }
-
-    companion object {
-        /**
-         * Whether or not the system UI should be auto-hidden after
-         * [AUTO_HIDE_DELAY_MILLIS] milliseconds.
-         */
-        private const val AUTO_HIDE = true
-
-        /**
-         * If [AUTO_HIDE] is set, the number of milliseconds to wait after
-         * user interaction before hiding the system UI.
-         */
-        private const val AUTO_HIDE_DELAY_MILLIS = 3000
-
-        /**
-         * Some older devices needs a small delay between UI widget updates
-         * and a change of the status and navigation bar.
-         */
-        private const val UI_ANIMATION_DELAY = 300
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

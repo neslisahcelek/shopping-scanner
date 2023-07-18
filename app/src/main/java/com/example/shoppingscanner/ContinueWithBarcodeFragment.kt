@@ -1,27 +1,27 @@
 package com.example.shoppingscanner
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.example.shoppingscanner.databinding.FragmentContinueWithBarcodeBinding
 
 
 class ContinueWithBarcodeFragment : Fragment() {
 
-    @Suppress("InlinedApi")
     private var visible: Boolean = false
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
     private var _binding: FragmentContinueWithBarcodeBinding? = null
     private var continueWithBarcodeButton: Button? = null
+    private var cameraRequest:ActivityResultLauncher<String>?= null
+    private var cardView:CardView? = null
 
     private val binding get() = _binding!!
 
@@ -41,21 +41,39 @@ class ContinueWithBarcodeFragment : Fragment() {
 
         visible = true
 
+        /*
+         cameraRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if (isGranted) {
+                navigateToBarcodeScannerFragment()
+            } else {
+
+            }
+        }
+         */
+
+
+        cardView = binding.cardView
         continueWithBarcodeButton = binding.btncontinuewithbarcode
-        navigate(continueWithBarcodeButton!!)
+        onclick(continueWithBarcodeButton!!)
 
     }
 
-    fun navigate(button: Button){
+    fun onclick(button: Button){
         button.setOnClickListener(){
-            val fragment = BarcodeScannerFragment()
-            continueWithBarcodeButton!!.visibility = View.GONE
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.continueWithBarcodeFragment, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+            navigateToBarcodeScannerFragment()
+            //cameraRequest?.launch(android.Manifest.permission.CAMERA)
         }
     }
+    fun navigateToBarcodeScannerFragment() {
+        val fragment = BarcodeScannerFragment()
+        continueWithBarcodeButton!!.visibility = View.GONE
+        cardView!!.visibility = View.GONE
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.continueWithBarcodeFragment, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -67,6 +85,7 @@ class ContinueWithBarcodeFragment : Fragment() {
         continueWithBarcodeButton = null
         fullscreenContent = null
         fullscreenContentControls = null
+        cardView = null
     }
 
 

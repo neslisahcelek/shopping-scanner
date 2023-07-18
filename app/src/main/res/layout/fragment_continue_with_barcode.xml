@@ -10,27 +10,30 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardView"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="500dp"
-        app:cardCornerRadius="8dp"
+        android:layout_marginBottom="450dp"
         app:cardBackgroundColor="@color/light_gray"
+        app:cardCornerRadius="18dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="dskjdsfkjlsdldfjkdfkjdskdsfl"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:textAlignment="center"
+            android:text="@string/continue_info"
+            android:textColor="@color/dark_gray_text"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </TextView>
+        </TextView>
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -38,8 +41,9 @@
         android:id="@+id/btncontinuewithbarcode"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="400dp"
-        android:text="@string/dont_wait"
+        android:layout_marginBottom="350dp"
+        android:text="@string/continue_with_barcode"
+        android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="18sp"
         app:cornerRadius="8dp"
