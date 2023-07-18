@@ -48,9 +48,11 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:text="@string/product"
+                    android:hint="Ürün: Nestle Çilekli Çikolata"
                     android:textStyle="bold"
                     android:textSize="20sp"
                     android:padding = "5dp"
+                    android:layout_marginStart="5dp"
                    >
 
                 </TextView>
@@ -61,9 +63,11 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:text= "@string/Price"
+                    android:hint="Fiyat: 15.99 ₺"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:padding = "5dp">
+                    android:padding = "5dp"
+                    android:layout_marginStart="5dp">
 
                 </TextView>
 
@@ -81,7 +85,9 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:text="@string/price_sum"
+                    android:hint="Toplam Tuar: 32,50 ₺"
                     android:textSize="14sp"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/btnbuynow"
                     app:layout_constraintEnd_toEndOf="@+id/btnbuynow"
                     app:layout_constraintStart_toStartOf="@+id/btnbuynow"></TextView>

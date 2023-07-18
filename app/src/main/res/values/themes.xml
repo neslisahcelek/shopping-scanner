@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.ShoppingScanner" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.ShoppingScanner" parent="Theme.MaterialComponents.Light.NoActionBar" />
 
     <style name="ThemeOverlay.ShoppingScanner.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
-        <item name="fullscreenTextColor">@color/light_blue_A200</item>
+        <item name="fullscreenBackgroundColor">@color/purple_200</item>
+        <item name="fullscreenTextColor">@color/purple_500</item>
     </style>
 </resources>

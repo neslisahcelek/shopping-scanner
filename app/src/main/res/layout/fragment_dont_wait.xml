@@ -15,7 +15,7 @@
         app:cornerRadius="8dp"
         android:layout_height="60dp"
         android:textSize="18sp"
-        android:layout_marginBottom="300dp"
+        android:layout_marginBottom="280dp"
         android:text="@string/dont_wait"
         android:textAllCaps="false"
         app:layout_constraintBottom_toBottomOf="parent"
