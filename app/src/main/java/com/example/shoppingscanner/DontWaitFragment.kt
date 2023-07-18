@@ -51,12 +51,14 @@ class DontWaitFragment : Fragment() {
         visible = true
 
         dontWaitButton = binding.btndontwait
+        navigate(dontWaitButton!!)
 
     }
 
     fun navigate(button: Button){
         button.setOnClickListener(){
             val fragment = ContinueWithBarcodeFragment()
+            dontWaitButton!!.visibility = View.GONE
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.dontWaitFragment, fragment)
             transaction.addToBackStack(null)
