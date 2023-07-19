@@ -45,7 +45,7 @@
         android:text="@string/continue_with_barcode"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:textSize="20sp"
         app:cornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

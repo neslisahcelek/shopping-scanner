@@ -79,6 +79,8 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
+                dün barcode scannerı yaptım, bugün sepet ve ödeme ekranı
+
                 <TextView
                     android:id="@+id/totalPrice"
                     android:layout_width="wrap_content"
