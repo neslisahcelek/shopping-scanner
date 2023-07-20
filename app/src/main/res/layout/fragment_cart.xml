@@ -43,7 +43,7 @@
             android:id="@+id/btn_pay_with_hadi"
             android:layout_width="300dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="35dp"
             android:text="@string/pay_with_hadi"
             android:textAlignment="center"
             android:textAllCaps="false"
