@@ -61,9 +61,7 @@ class CartFragment : Fragment() {
 
     private fun navigateToPay() {
         payButton?.setOnClickListener(View.OnClickListener {
-            binding.cartRecyclerView.visibility = View.GONE
-            binding.myCart.visibility = View.GONE
-            binding.btnPayWithHadi.visibility = View.GONE
+            setVisibility()
 
             val fragment = PaymentCompletedFragment()
             val transaction = activity?.supportFragmentManager?.beginTransaction()
@@ -71,6 +69,11 @@ class CartFragment : Fragment() {
             transaction?.addToBackStack(null)
             transaction?.commit()
         })
+    }
+    fun setVisibility() {
+        binding.cartRecyclerView.visibility = View.GONE
+        binding.myCart.visibility = View.GONE
+        binding.btnPayWithHadi.visibility = View.GONE
     }
 
     override fun onResume() {
@@ -82,7 +85,6 @@ class CartFragment : Fragment() {
         super.onPause()
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
-        // Clear the systemUiVisibility flag
         activity?.window?.decorView?.systemUiVisibility = 0
     }
 

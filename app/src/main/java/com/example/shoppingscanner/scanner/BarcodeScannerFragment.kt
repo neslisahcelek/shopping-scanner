@@ -37,6 +37,7 @@ class BarcodeScannerFragment : Fragment() {
     private var fullscreenContent: View? = null
     private var fullscreenContentControls: View? = null
 
+    // views
     private var _binding: FragmentBarcodeScannerBinding? = null
     private var addToCartButton: Button? = null
     private var buyNowButton: Button? = null
@@ -45,13 +46,16 @@ class BarcodeScannerFragment : Fragment() {
     private var priceTextView: TextView? = null
     private var totalPriceTextView: TextView? = null
 
+    // texts
     private var productText:String? = null
     private var priceText:String? = null
     private var totalPriceText:String? = null
 
+    // barcode scanner
     private var barcodeScannerOptions: BarcodeScannerOptions? = null
     private var barcodeScanner: BarcodeScanner? = null
 
+    // image
     private var imageBitmap:Bitmap? = null
     private val REQUEST_IMAGE_CAPTURE=1
 
@@ -66,7 +70,6 @@ class BarcodeScannerFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentBarcodeScannerBinding.inflate(inflater, container, false)
 
         cameraPreview = binding.cameraPreview
@@ -75,9 +78,9 @@ class BarcodeScannerFragment : Fragment() {
         priceTextView = binding.productPrice
         totalPriceTextView = binding.totalPrice
 
-        productText = "Ürün: "
-        priceText = "Fiyat: "
-        totalPriceText = "Toplam Tutar: "
+        productText = R.string.product.toString()
+        priceText = R.string.price.toString()
+        totalPriceText = R.string.price_sum.toString()
 
 
         buyNowButton = binding.btnbuynow
@@ -87,7 +90,6 @@ class BarcodeScannerFragment : Fragment() {
             .setBarcodeFormats(
                 Barcode.FORMAT_ALL_FORMATS)
             .build()
-
         barcodeScanner = BarcodeScanning.getClient(barcodeScannerOptions!!)
 
         viewModel = ViewModelProvider(requireActivity())[ProductViewModel::class.java]
@@ -98,18 +100,20 @@ class BarcodeScannerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+
         visible = true
 
         takeImage()
 
         buyNowButton?.setOnClickListener(){
             Log.d("buyNowButton", "buyNowButton: $product")
-            product?.let { it1 -> addtoCart(it1) }
-            navigate()
+            product?.let { it1 -> addtoCart(it1) } // add to cart
+            navigate() // navigate to cart screen
         }
 
         addToCartButton?.setOnClickListener(){
-            this.product?.let { it1 -> addtoCart(it1) }
+            this.product?.let { it1 -> addtoCart(it1) } // add to cart
         }
 
     }
@@ -152,14 +156,14 @@ class BarcodeScannerFragment : Fragment() {
                 .addOnSuccessListener { barcodes ->
 
                     if (barcodes.toString() == "[]") {
-                        showToast("No barcode found")
-                        getProductDetails("6260806400259")//
+                        showToast("Please try again.")
+                        takeImage()
                     }
 
                     for (barcode in barcodes) {
-                        Log.d("raw", barcode.rawValue.toString())
-                        getProductDetails("6260806400259")
-                        //getProductDetails(barcode.rawValue.toString())
+                        Log.d("barcode", barcode.rawValue.toString())
+                        //getProductDetails("3614272049529")
+                        getProductDetails(barcode.rawValue.toString())
                     }
                 }
                 .addOnFailureListener {
@@ -170,7 +174,7 @@ class BarcodeScannerFragment : Fragment() {
             showToast("Please take an image")
         }
     }
-    private fun getProductDetails(barcode: String) {
+    private fun getProductDetails2(barcode: String) {
 
         Log.d("getProductDetails", "getProductDetails: $barcode")
         val product1 = Product(
@@ -250,7 +254,7 @@ class BarcodeScannerFragment : Fragment() {
         totalPriceTextView!!.text = totalPriceText + " " + productPrice + " ₺"
     }
 
-    private fun getProductDetails2(barcode: String) {
+    private fun getProductDetails(barcode: String) {
         viewModel.getDataFromAPI(barcode)
         Log.d("get data ", barcode)
         viewModel.product.observe(viewLifecycleOwner) { product ->
