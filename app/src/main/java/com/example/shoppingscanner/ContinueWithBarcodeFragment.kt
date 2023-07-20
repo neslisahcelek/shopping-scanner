@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.example.shoppingscanner.databinding.FragmentContinueWithBarcodeBinding
@@ -41,7 +42,6 @@ class ContinueWithBarcodeFragment : Fragment() {
 
         visible = true
 
-        /*
          cameraRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 navigateToBarcodeScannerFragment()
@@ -49,7 +49,7 @@ class ContinueWithBarcodeFragment : Fragment() {
 
             }
         }
-         */
+
 
 
         cardView = binding.cardView
