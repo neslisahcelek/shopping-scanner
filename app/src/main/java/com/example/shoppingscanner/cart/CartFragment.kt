@@ -43,7 +43,7 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter= ProductAdapter(viewModel.cartProducts as ArrayList<Product>)
+        adapter= ProductAdapter(viewModel.cartProducts as HashMap<Product, Int>)
         visible = true
         Log.d("cart", "onViewCreated: ${viewModel.cartProducts} ")
 
@@ -61,6 +61,10 @@ class CartFragment : Fragment() {
 
     private fun navigateToPay() {
         payButton?.setOnClickListener(View.OnClickListener {
+            binding.cartRecyclerView.visibility = View.GONE
+            binding.myCart.visibility = View.GONE
+            binding.btnPayWithHadi.visibility = View.GONE
+
             val fragment = PaymentCompletedFragment()
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.cart_fragment, fragment)

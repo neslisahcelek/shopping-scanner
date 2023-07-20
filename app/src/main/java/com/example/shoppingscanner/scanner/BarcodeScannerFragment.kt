@@ -116,14 +116,19 @@ class BarcodeScannerFragment : Fragment() {
 
     private fun addtoCart(product: Product) {
         Log.d("addtoCart", "addtoCart: $product")
-        viewModel.cartProducts.add(product)
 
         var productPrice = product.stores?.get(0)?.price?.toDouble()
+        var cart = viewModel.cartProducts
 
-        if (viewModel.cartProducts.size > 1) {
+        if (cart.get(product) != null) {
+            cart.set(product, cart.get(product)!! + 1)
             if (productPrice != null) {
-                productPrice = productPrice * viewModel.cartProducts.size
+                productPrice *= cart.get(product)!!
+                Log.d("addtoCart", "productPrice: $productPrice")
             }
+        }else{
+            cart.put(product, 1)
+            Log.d("addtoCart", "1 productQuantity: $cart.get(product)")
         }
         totalPriceTextView!!.text = totalPriceText + " " + productPrice + " ₺"
         Log.d("addtoCart", "products: ${viewModel.cartProducts}")

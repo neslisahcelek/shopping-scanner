@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppingscanner.databinding.ProductItemBinding
 import com.example.shoppingscanner.model.Product
 
-class ProductAdapter (private val data: ArrayList<Product>):
+class ProductAdapter (private val data: HashMap<Product, Int>):
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     lateinit var binding: ProductItemBinding
@@ -26,7 +26,7 @@ class ProductAdapter (private val data: ArrayList<Product>):
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
             holder.itemView.apply {
-                binding.product = data[position]
+                binding.product = data.entries.elementAt(position).key
 
             }
     }

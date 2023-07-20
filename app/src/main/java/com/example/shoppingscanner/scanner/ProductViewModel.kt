@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 
 class ProductViewModel : ViewModel() {
     private val barcodeApi = barcodeAPI.retrofitService
-    val cartProducts = mutableListOf<Product>()
+    //val cartProducts = mutableListOf<Product>()
+    val cartProducts = HashMap< Product,Int>()
 
     private val _product = MutableLiveData<Product>()
     val product: LiveData<Product>
