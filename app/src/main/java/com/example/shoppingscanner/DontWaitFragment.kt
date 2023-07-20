@@ -58,12 +58,15 @@ class DontWaitFragment : Fragment() {
     fun navigate(button: Button){
         button.setOnClickListener(){
             val fragment = ContinueWithBarcodeFragment()
-            dontWaitButton!!.visibility = View.GONE
+            setVisibility()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.dontWaitFragment, fragment)
             transaction.addToBackStack(null)
             transaction.commit()
         }
+    }
+    fun setVisibility(){
+        dontWaitButton!!.visibility = View.GONE
     }
 
     override fun onResume() {

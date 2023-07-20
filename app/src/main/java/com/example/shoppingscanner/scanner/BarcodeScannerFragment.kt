@@ -286,18 +286,20 @@ class BarcodeScannerFragment : Fragment() {
     fun navigate(){
         Log.d("navigate","navigating")
             val fragment = CartFragment()
-            buyNowButton!!.visibility = View.GONE
-            addToCartButton!!.visibility = View.GONE
-            cameraPreview!!.visibility = View.GONE
-            nameTextView!!.visibility = View.GONE
-            priceTextView!!.visibility = View.GONE
-            totalPriceTextView!!.visibility = View.GONE
+            setVisibility()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.barcodeScannerFragment, fragment)
             transaction.addToBackStack(null)
             transaction.commit()
     }
-
+    fun setVisibility() {
+        buyNowButton!!.visibility = View.GONE
+        addToCartButton!!.visibility = View.GONE
+        cameraPreview!!.visibility = View.GONE
+        nameTextView!!.visibility = View.GONE
+        priceTextView!!.visibility = View.GONE
+        totalPriceTextView!!.visibility = View.GONE
+    }
     fun showToast(message:String){
         Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
     }

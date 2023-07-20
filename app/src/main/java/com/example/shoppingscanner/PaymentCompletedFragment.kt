@@ -68,7 +68,6 @@ class PaymentCompletedFragment : Fragment() {
             binding.paymentSuccessfull.visibility = View.GONE
             binding.cartRecyclerView.visibility = View.GONE
             homeButton?.visibility = View.GONE
-
     }
 
     override fun onResume() {

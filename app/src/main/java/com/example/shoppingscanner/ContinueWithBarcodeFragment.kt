@@ -66,14 +66,16 @@ class ContinueWithBarcodeFragment : Fragment() {
     }
     fun navigateToBarcodeScannerFragment() {
         val fragment = BarcodeScannerFragment()
-        continueWithBarcodeButton!!.visibility = View.GONE
-        cardView!!.visibility = View.GONE
+        setVisibility()
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.continueWithBarcodeFragment, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
     }
-
+    fun setVisibility(){
+        continueWithBarcodeButton!!.visibility = View.GONE
+        cardView!!.visibility = View.GONE
+    }
 
     override fun onResume() {
         super.onResume()
