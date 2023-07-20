@@ -1,6 +1,7 @@
 package com.example.shoppingscanner.cart
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +34,7 @@ class CartFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(this)[ProductViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[ProductViewModel::class.java]
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -44,10 +45,13 @@ class CartFragment : Fragment() {
 
         adapter= ProductAdapter(viewModel.cartProducts as ArrayList<Product>)
         visible = true
+        Log.d("cart", "onViewCreated: ${viewModel.cartProducts} ")
+
 
         with(binding) {
             cartRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             cartRecyclerView.adapter = adapter
+            Log.d("cart", "onViewCreated: ${viewModel.cartProducts} $adapter")
             cartText  = myCart
             payButton = btnPayWithHadi
         }

@@ -27,6 +27,7 @@ class ProductAdapter (private val data: ArrayList<Product>):
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
             holder.itemView.apply {
                 binding.product = data[position]
+
             }
     }
 }
