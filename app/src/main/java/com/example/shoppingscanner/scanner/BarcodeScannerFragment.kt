@@ -78,9 +78,9 @@ class BarcodeScannerFragment : Fragment() {
         priceTextView = binding.productPrice
         totalPriceTextView = binding.totalPrice
 
-        productText = R.string.product.toString()
-        priceText = R.string.price.toString()
-        totalPriceText = R.string.price_sum.toString()
+        productText = "Ürün: "
+        priceText = "Fiyat: "
+        totalPriceText = "Toplam Tutar: "
 
 
         buyNowButton = binding.btnbuynow
@@ -121,7 +121,12 @@ class BarcodeScannerFragment : Fragment() {
     private fun addtoCart(product: Product) {
         Log.d("addtoCart", "addtoCart: $product")
 
-        var productPrice = product.stores?.get(0)?.price?.toDouble()
+        var productPrice=0.0
+        try{
+            productPrice = product.stores?.get(0)?.price?.toDouble()!!
+        }catch (e:Exception){
+            Log.e("Error",e.message.toString())
+        }
         var cart = viewModel.cartProducts
 
         if (cart.get(product) != null) {
@@ -162,8 +167,8 @@ class BarcodeScannerFragment : Fragment() {
 
                     for (barcode in barcodes) {
                         Log.d("barcode", barcode.rawValue.toString())
-                        //getProductDetails("3614272049529")
-                        getProductDetails(barcode.rawValue.toString())
+                        getProductDetails("3614272049529")
+                        //getProductDetails(barcode.rawValue.toString())
                     }
                 }
                 .addOnFailureListener {
@@ -261,9 +266,13 @@ class BarcodeScannerFragment : Fragment() {
             product?.let {
                 Log.d("observe product", product.toString())
                 this.product=product
-                val productName = it.title
-                val productPrice = it.stores?.get(0)?.price.toString()
+                val productName = product.title
+                var productPrice = "0.0"
+                try {
+                    productPrice = product.stores?.get(0)?.price.toString()
+                }catch (e:Exception){
 
+                }
                 nameTextView!!.text = productText + " " + productName
                 priceTextView!!.text = priceText + " " + productPrice + " ₺"
                 totalPriceTextView!!.text = totalPriceText + " " + productPrice + " ₺"
@@ -303,6 +312,7 @@ class BarcodeScannerFragment : Fragment() {
         nameTextView!!.visibility = View.GONE
         priceTextView!!.visibility = View.GONE
         totalPriceTextView!!.visibility = View.GONE
+        binding.icon.visibility = View.GONE
     }
     fun showToast(message:String){
         Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
