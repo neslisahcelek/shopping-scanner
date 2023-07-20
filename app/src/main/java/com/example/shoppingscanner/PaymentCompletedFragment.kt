@@ -6,16 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.shoppingscanner.cart.ProductAdapter
 import com.example.shoppingscanner.databinding.FragmentPaymentCompletedBinding
+import com.example.shoppingscanner.model.Product
 import com.example.shoppingscanner.scanner.BarcodeScannerFragment
+import com.example.shoppingscanner.scanner.ProductViewModel
 
 class PaymentCompletedFragment : Fragment() {
     private var visible: Boolean = false
     private var homeButton: Button? = null
 
     private lateinit var adapter: ProductAdapter
+
+    private lateinit var viewModel: ProductViewModel
 
     private var _binding: FragmentPaymentCompletedBinding? = null
     private val binding get() = _binding!!
@@ -25,7 +32,7 @@ class PaymentCompletedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        viewModel = ViewModelProvider(requireActivity())[ProductViewModel::class.java]
         _binding = FragmentPaymentCompletedBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -34,6 +41,7 @@ class PaymentCompletedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter= ProductAdapter(viewModel.cartProducts as HashMap<Product, Int>)
         visible = true
 
         with(binding) {
@@ -47,12 +55,20 @@ class PaymentCompletedFragment : Fragment() {
 
     private fun navigateToHome() {
         homeButton?.setOnClickListener(View.OnClickListener {
+            setVisibility()
             val fragment = BarcodeScannerFragment()
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.payment_completed_fragment, fragment)
             transaction?.addToBackStack(null)
             transaction?.commit()
         })
+    }
+    fun setVisibility() {
+            binding.paymentCompletedImage.visibility = View.GONE
+            binding.paymentSuccessfull.visibility = View.GONE
+            binding.cartRecyclerView.visibility = View.GONE
+            homeButton?.visibility = View.GONE
+
     }
 
     override fun onResume() {
