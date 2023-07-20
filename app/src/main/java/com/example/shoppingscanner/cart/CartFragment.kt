@@ -1,4 +1,4 @@
-package com.example.shoppingscanner
+package com.example.shoppingscanner.cart
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,27 +6,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.shoppingscanner.cart.ProductAdapter
-import com.example.shoppingscanner.databinding.FragmentPaymentCompletedBinding
-import com.example.shoppingscanner.scanner.BarcodeScannerFragment
+import androidx.lifecycle.ViewModelProvider
+import com.example.shoppingscanner.PaymentCompletedFragment
+import com.example.shoppingscanner.R
+import com.example.shoppingscanner.databinding.FragmentCartBinding
+import com.example.shoppingscanner.model.Product
+import com.example.shoppingscanner.scanner.ProductViewModel
 
-class PaymentCompletedFragment : Fragment() {
+class CartFragment : Fragment() {
+
     private var visible: Boolean = false
-    private var homeButton: Button? = null
+    private var cartText:TextView? = null
+    private var payButton: Button? = null
 
     private lateinit var adapter: ProductAdapter
 
-    private var _binding: FragmentPaymentCompletedBinding? = null
+    private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var viewModel: ProductViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        _binding = FragmentPaymentCompletedBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this)[ProductViewModel::class.java]
+        _binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -34,22 +42,24 @@ class PaymentCompletedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter= ProductAdapter(viewModel.cartProducts as ArrayList<Product>)
         visible = true
 
         with(binding) {
             cartRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             cartRecyclerView.adapter = adapter
-            homeButton = btnHome
+            cartText  = myCart
+            payButton = btnPayWithHadi
         }
 
-        navigateToHome()
+        navigateToPay()
     }
 
-    private fun navigateToHome() {
-        homeButton?.setOnClickListener(View.OnClickListener {
-            val fragment = BarcodeScannerFragment()
+    private fun navigateToPay() {
+        payButton?.setOnClickListener(View.OnClickListener {
+            val fragment = PaymentCompletedFragment()
             val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.payment_completed_fragment, fragment)
+            transaction?.replace(R.id.cart_fragment, fragment)
             transaction?.addToBackStack(null)
             transaction?.commit()
         })
@@ -70,6 +80,7 @@ class PaymentCompletedFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        cartText = null
     }
 
     override fun onDestroyView() {

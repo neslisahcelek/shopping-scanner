@@ -5,7 +5,7 @@
     <data>
         <variable
             name="product"
-            type="com.example.shoppingscanner.model.ProductBarcode" />
+            type="com.example.shoppingscanner.model.Product" />
     </data>
 
     <LinearLayout
@@ -36,7 +36,7 @@
             android:layout_height="80dp"
             android:layout_weight="2"
             android:textSize="20sp"
-            android:text="@{product.urunAd}">
+            android:text="@{product.title}">
 
         </TextView>
 
@@ -47,7 +47,7 @@
             android:layout_weight="1"
             android:textStyle="bold"
             android:textSize="20sp"
-            android:text="@{product.urunFiyat.component1().toString()}">
+            android:text="@{product.category}">
 
         </TextView>
     </LinearLayout>

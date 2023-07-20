@@ -1,14 +1,12 @@
-package com.example.shoppingscanner
+package com.example.shoppingscanner.cart
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppingscanner.databinding.ProductItemBinding
-import com.example.shoppingscanner.model.ProductBarcode
+import com.example.shoppingscanner.model.Product
 
-class ProductAdapter (private val data: ArrayList<ProductBarcode>):
+class ProductAdapter (private val data: ArrayList<Product>):
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     lateinit var binding: ProductItemBinding
