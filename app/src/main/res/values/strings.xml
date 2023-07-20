@@ -16,6 +16,7 @@
 
     <string name="my_cart">Hemen Sepetim</string>
     <string name="pay_with_hadi">Hadi İle Öde</string>
+    <string name="price_with_currency">%1$s₺</string>
 
     <string name="payment_successfull">Ödeme Başarılı</string>
     <string name="home_screen">Anasayfa</string>
