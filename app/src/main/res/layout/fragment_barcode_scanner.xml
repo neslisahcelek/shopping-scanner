@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:hint="Toplam Tuar: 32,50 ₺"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@+id/btnbuynow"
                     app:layout_constraintEnd_toEndOf="@+id/btnbuynow"
