@@ -1,7 +1,9 @@
 package com.example.shoppingscanner.scanner
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,6 +15,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppingscanner.cart.CartFragment
@@ -143,16 +146,41 @@ class BarcodeScannerFragment : Fragment() {
         Log.d("addtoCart", "products: ${viewModel.cartProducts}")
     }
 
-    private fun takeImage()
-    {
+    private fun takeImage() {
+        // Check if the camera permission is already granted
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            // Camera permission already granted, start the camera activity
+            startCamera()
+        } else {
+            // Camera permission not granted, request the permission
+            requestCameraPermission()
+        }
+    }
+
+    private fun requestCameraPermission() {
+        val CAMERA_PERMISSION_REQUEST_CODE =100
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.CAMERA),
+            CAMERA_PERMISSION_REQUEST_CODE
+        )
+        takeImage()
+    }
+
+    private fun startCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try{
-            startActivityForResult(intent,REQUEST_IMAGE_CAPTURE)
-        } catch (e:Exception){
-            Log.e("Error taking image",e.message.toString())
+        try {
+            startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
+        } catch (e: Exception) {
+            Log.e("Error taking image", e.message.toString())
             showToast("Please try again.")
         }
     }
+
     private fun processImage() {
         if (imageBitmap!=null){
             val inputImage = InputImage.fromBitmap(imageBitmap!!,0)
