@@ -29,6 +29,7 @@
             android:layout_weight="1"
             android:padding="10dp"
             android:src="@mipmap/ic_launcher"
+
             >
 
         </ImageView>

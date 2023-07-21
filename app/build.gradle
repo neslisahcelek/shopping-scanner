@@ -96,6 +96,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:$hilt_version")
     kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
 
+    // Picasso
+    implementation 'com.squareup.picasso:picasso:2.8'
+
+
 }
 kapt {
     correctErrorTypes = true
