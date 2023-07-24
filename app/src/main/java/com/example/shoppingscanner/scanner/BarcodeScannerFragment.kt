@@ -68,6 +68,8 @@ class BarcodeScannerFragment : Fragment() {
     private lateinit var viewModel: ProductViewModel
     private val binding get() = _binding!!
 
+    val CAMERA_PERMISSION_REQUEST_CODE =100
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -159,14 +161,26 @@ class BarcodeScannerFragment : Fragment() {
     }
 
     private fun requestCameraPermission() {
-        val CAMERA_PERMISSION_REQUEST_CODE =100
         ActivityCompat.requestPermissions(
             requireActivity(),
             arrayOf(Manifest.permission.CAMERA),
             CAMERA_PERMISSION_REQUEST_CODE
         )
     }
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        Log.d("camera permission","start")
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d("camera permission", "granted")
+            startCamera()
+        } else {
+            showToast("Camera permission denied.")
+        }
+    }
     private fun startCamera() {
         Log.d("start camera", "start")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -177,6 +191,23 @@ class BarcodeScannerFragment : Fragment() {
             showToast("Please try again.")
         }
     }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode==REQUEST_IMAGE_CAPTURE && resultCode== RESULT_OK){
+            val extras: Bundle? = data?.extras
+            imageBitmap= extras?.get("data") as Bitmap
+
+            if (imageBitmap!=null) {
+                binding.cameraPreview.setImageBitmap(imageBitmap)
+                Log.d("onactivityresult","Image not null")
+                processImage()
+            }else{
+                takeImage()
+            }
+        }
+    }
+
+
 
     private fun processImage() {
         if (imageBitmap!=null){
@@ -229,19 +260,7 @@ class BarcodeScannerFragment : Fragment() {
             }
         }
     }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode==REQUEST_IMAGE_CAPTURE && resultCode== RESULT_OK){
-            val extras: Bundle? = data?.extras
-            imageBitmap= extras?.get("data") as Bitmap
 
-            if (imageBitmap!=null) {
-                binding.cameraPreview.setImageBitmap(imageBitmap)
-                Log.d("onactivityresult","Image not null")
-                processImage()
-            }
-        }
-    }
 
     fun navigate(){
         Log.d("navigate","navigating")
