@@ -1,4 +1,4 @@
-package com.example.shoppingscanner.cart
+package com.example.shoppingscanner.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

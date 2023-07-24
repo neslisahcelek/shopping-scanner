@@ -1,4 +1,4 @@
-package com.example.shoppingscanner
+package com.example.shoppingscanner.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,8 +9,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentContinueWithBarcodeBinding
-import com.example.shoppingscanner.scanner.BarcodeScannerFragment
 
 
 class ContinueWithBarcodeFragment : Fragment() {

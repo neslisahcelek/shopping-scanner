@@ -1,4 +1,4 @@
-package com.example.shoppingscanner.cart
+package com.example.shoppingscanner.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -10,12 +10,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
-import com.example.shoppingscanner.PaymentCompletedFragment
 import com.example.shoppingscanner.R
+import com.example.shoppingscanner.adapter.ProductAdapter
 import com.example.shoppingscanner.databinding.FragmentCartBinding
 import com.example.shoppingscanner.model.Product
-import com.example.shoppingscanner.scanner.ProductViewModel
+import com.example.shoppingscanner.viewmodel.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

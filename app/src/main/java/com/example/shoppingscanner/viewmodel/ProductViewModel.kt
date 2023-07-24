@@ -1,4 +1,4 @@
-package com.example.shoppingscanner.scanner
+package com.example.shoppingscanner.viewmodel
 
 import android.content.ContentValues
 import android.util.Log
@@ -9,10 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.shoppingscanner.model.Product
 import com.example.shoppingscanner.model.ProductResponse
 import com.example.shoppingscanner.network.BarcodeRepository
-import com.example.shoppingscanner.network.BarcodeService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.lang.reflect.Constructor
 import javax.inject.Inject
 
 

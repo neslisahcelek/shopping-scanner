@@ -1,4 +1,4 @@
-package com.example.shoppingscanner.scanner
+package com.example.shoppingscanner.ui
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
@@ -18,18 +18,16 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.example.shoppingscanner.R
-import com.example.shoppingscanner.cart.CartFragment
 import com.example.shoppingscanner.databinding.FragmentBarcodeScannerBinding
 import com.example.shoppingscanner.model.Product
+import com.example.shoppingscanner.viewmodel.ProductViewModel
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class BarcodeScannerFragment : Fragment() {

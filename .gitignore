@@ -19,3 +19,4 @@ gradle-app.setting
 .idea/.name
 app/src/main/res/drawable/baseline_broken_image_24.xml
 app/src/main/res/drawable/baseline_downloading_24.xml
+local.properties
