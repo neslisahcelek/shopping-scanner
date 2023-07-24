@@ -147,16 +147,13 @@ class BarcodeScannerFragment : Fragment() {
     }
 
     private fun takeImage() {
-        // Check if the camera permission is already granted
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            // Camera permission already granted, start the camera activity
             startCamera()
         } else {
-            // Camera permission not granted, request the permission
             requestCameraPermission()
         }
     }
@@ -168,10 +165,10 @@ class BarcodeScannerFragment : Fragment() {
             arrayOf(Manifest.permission.CAMERA),
             CAMERA_PERMISSION_REQUEST_CODE
         )
-        takeImage()
     }
 
     private fun startCamera() {
+        Log.d("start camera", "start")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         try {
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE)
