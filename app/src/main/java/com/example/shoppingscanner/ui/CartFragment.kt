@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.shoppingscanner.R
+import androidx.navigation.Navigation
 import com.example.shoppingscanner.adapter.ProductAdapter
 import com.example.shoppingscanner.databinding.FragmentCartBinding
 import com.example.shoppingscanner.model.Product
@@ -45,7 +45,7 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val cartProducts  = arguments?.getSerializable("cart")as HashMap<Product, Int>
+        val cartProducts  = viewModel.cartProducts
         viewModel.cartProducts.clear()
         viewModel.cartProducts.putAll(cartProducts)
         adapter= ProductAdapter(viewModel.cartProducts)
@@ -62,28 +62,16 @@ class CartFragment : Fragment() {
             payButton = btnPayWithHadi
         }
 
-        navigateToPay()
-    }
-
-    private fun navigateToPay() {
         payButton?.setOnClickListener(View.OnClickListener {
-            setVisibility()
-
-            val fragment = PaymentCompletedFragment()
-            fragment.arguments = Bundle().apply {
-                putSerializable("cart",viewModel.cartProducts)
-            }
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.cart_fragment, fragment)
-            transaction?.addToBackStack(null)
-            transaction?.commit()
+            navigateToPay(it)
         })
     }
-    fun setVisibility() {
-        binding.cartRecyclerView.visibility = View.GONE
-        binding.myCart.visibility = View.GONE
-        binding.btnPayWithHadi.visibility = View.GONE
+
+    private fun navigateToPay(view: View) {
+        val intent = CartFragmentDirections.actionCartFragmentToPaymentCompletedFragment()
+        Navigation.findNavController(view).navigate(intent)
     }
+
 
     override fun onResume() {
         super.onResume()

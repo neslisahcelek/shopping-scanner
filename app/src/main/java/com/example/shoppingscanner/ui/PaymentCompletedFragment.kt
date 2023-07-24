@@ -8,7 +8,7 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.shoppingscanner.R
+import androidx.navigation.Navigation
 import com.example.shoppingscanner.adapter.ProductAdapter
 import com.example.shoppingscanner.databinding.FragmentPaymentCompletedBinding
 import com.example.shoppingscanner.model.Product
@@ -41,7 +41,7 @@ class PaymentCompletedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val cartProducts  = arguments?.getSerializable("cart")as HashMap<Product, Int>
+        val cartProducts  = viewModel.cartProducts
         viewModel.cartProducts.clear()
         viewModel.cartProducts.putAll(cartProducts)
         adapter= ProductAdapter(viewModel.cartProducts)
@@ -54,24 +54,14 @@ class PaymentCompletedFragment : Fragment() {
             homeButton = btnHome
         }
 
-        navigateToHome()
-    }
-
-    private fun navigateToHome() {
         homeButton?.setOnClickListener(View.OnClickListener {
-            setVisibility()
-            val fragment = BarcodeScannerFragment()
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.payment_completed_fragment, fragment)
-            transaction?.addToBackStack(null)
-            transaction?.commit()
+            navigateToHome(it)
         })
     }
-    fun setVisibility() {
-            binding.paymentCompletedImage.visibility = View.GONE
-            binding.paymentSuccessfull.visibility = View.GONE
-            binding.cartRecyclerView.visibility = View.GONE
-            homeButton?.visibility = View.GONE
+
+    private fun navigateToHome(view: View) {
+       val intent = PaymentCompletedFragmentDirections.actionPaymentCompletedFragmentToBarcodeScannerFragment()
+        Navigation.findNavController(view).navigate(intent)
     }
 
     override fun onResume() {

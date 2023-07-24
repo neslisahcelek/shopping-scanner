@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentContinueWithBarcodeBinding
 
@@ -42,6 +43,11 @@ class ContinueWithBarcodeFragment : Fragment() {
 
         visible = true
 
+        cardView = binding.cardView
+        continueWithBarcodeButton = binding.btncontinuewithbarcode
+        onclick(continueWithBarcodeButton!!)
+
+        /*
          cameraRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             if (isGranted) {
                 navigateToBarcodeScannerFragment()
@@ -50,32 +56,21 @@ class ContinueWithBarcodeFragment : Fragment() {
             }
         }
 
-
-
-        cardView = binding.cardView
-        continueWithBarcodeButton = binding.btncontinuewithbarcode
-        onclick(continueWithBarcodeButton!!)
+         */
 
     }
 
     fun onclick(button: Button){
         button.setOnClickListener(){
-            navigateToBarcodeScannerFragment()
+            navigateToBarcodeScannerFragment(it)
             //cameraRequest?.launch(android.Manifest.permission.CAMERA)
         }
     }
-    fun navigateToBarcodeScannerFragment() {
-        val fragment = BarcodeScannerFragment()
-        setVisibility()
-        val transaction = requireActivity().supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.continueWithBarcodeFragment, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
+    fun navigateToBarcodeScannerFragment(view:View) {
+        val action = ContinueWithBarcodeFragmentDirections.actionContinueWithBarcodeFragmentToBarcodeScannerFragment()
+        Navigation.findNavController(view).navigate(action)
     }
-    fun setVisibility(){
-        continueWithBarcodeButton!!.visibility = View.GONE
-        cardView!!.visibility = View.GONE
-    }
+
 
     override fun onResume() {
         super.onResume()

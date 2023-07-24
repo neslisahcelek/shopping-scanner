@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentDontWaitBinding
+import com.google.android.material.button.MaterialButton
 
 class DontWaitFragment : Fragment() {
     private val hideHandler = Handler(Looper.myLooper()!!)
@@ -51,24 +53,16 @@ class DontWaitFragment : Fragment() {
         visible = true
 
         dontWaitButton = binding.btndontwait
-        navigate(dontWaitButton!!)
-
-    }
-
-    fun navigate(button: Button){
-        button.setOnClickListener(){
-            val fragment = ContinueWithBarcodeFragment()
-            setVisibility()
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.dontWaitFragment, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+        (dontWaitButton as MaterialButton).setOnClickListener{
+            navigate(view)
         }
-    }
-    fun setVisibility(){
-        dontWaitButton!!.visibility = View.GONE
+
     }
 
+    fun navigate(view:View){
+        val action = DontWaitFragmentDirections.actionDontWaitFragmentToContinueWithBarcodeFragment()
+        Navigation.findNavController(view).navigate(action)
+    }
     override fun onResume() {
         super.onResume()
     }

@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
 import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentBarcodeScannerBinding
 import com.example.shoppingscanner.model.Product
@@ -107,7 +108,7 @@ class BarcodeScannerFragment : Fragment() {
         buyNowButton?.setOnClickListener(){
             Log.d("buyNowButton", "buyNowButton: $product")
             product?.let { it1 -> addtoCart(it1) } // add to cart
-            navigate() // navigate to cart screen
+            navigate(it) // navigate to cart screen
         }
 
         addToCartButton?.setOnClickListener(){
@@ -255,27 +256,11 @@ class BarcodeScannerFragment : Fragment() {
     }
 
 
-    fun navigate(){
-        Log.d("navigate","navigating")
-            val fragment = CartFragment()
-        fragment.arguments = Bundle().apply {
-            putSerializable("cart",viewModel.cartProducts)
-        }
-            setVisibility()
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.barcodeScannerFragment, fragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
+    fun navigate(view:View){
+        val intent = BarcodeScannerFragmentDirections.actionBarcodeScannerFragmentToCartFragment()
+        Navigation.findNavController(view).navigate(intent)
     }
-    fun setVisibility() {
-        buyNowButton!!.visibility = View.GONE
-        addToCartButton!!.visibility = View.GONE
-        cameraPreview!!.visibility = View.GONE
-        nameTextView!!.visibility = View.GONE
-        priceTextView!!.visibility = View.GONE
-        totalPriceTextView!!.visibility = View.GONE
-        binding.icon.visibility = View.GONE
-    }
+
     fun showToast(message:String){
         Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
     }
