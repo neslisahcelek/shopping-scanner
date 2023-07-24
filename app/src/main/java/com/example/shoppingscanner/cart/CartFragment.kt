@@ -9,13 +9,16 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.example.shoppingscanner.PaymentCompletedFragment
 import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentCartBinding
 import com.example.shoppingscanner.model.Product
 import com.example.shoppingscanner.scanner.ProductViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CartFragment : Fragment() {
 
     private var visible: Boolean = false
@@ -27,14 +30,14 @@ class CartFragment : Fragment() {
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: ProductViewModel
+    private val viewModel: ProductViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = ViewModelProvider(requireActivity())[ProductViewModel::class.java]
+
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -43,7 +46,11 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter= ProductAdapter(viewModel.cartProducts as HashMap<Product, Int>)
+        val cartProducts  = arguments?.getSerializable("cart")as HashMap<Product, Int>
+        viewModel.cartProducts.clear()
+        viewModel.cartProducts.putAll(cartProducts)
+        adapter= ProductAdapter(viewModel.cartProducts)
+
         visible = true
         Log.d("cart", "onViewCreated: ${viewModel.cartProducts} ")
 
@@ -64,6 +71,9 @@ class CartFragment : Fragment() {
             setVisibility()
 
             val fragment = PaymentCompletedFragment()
+            fragment.arguments = Bundle().apply {
+                putSerializable("cart",viewModel.cartProducts)
+            }
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction?.replace(R.id.cart_fragment, fragment)
             transaction?.addToBackStack(null)

@@ -15,7 +15,9 @@ import com.example.shoppingscanner.databinding.FragmentPaymentCompletedBinding
 import com.example.shoppingscanner.model.Product
 import com.example.shoppingscanner.scanner.BarcodeScannerFragment
 import com.example.shoppingscanner.scanner.ProductViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PaymentCompletedFragment : Fragment() {
     private var visible: Boolean = false
     private var homeButton: Button? = null
@@ -41,7 +43,11 @@ class PaymentCompletedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter= ProductAdapter(viewModel.cartProducts as HashMap<Product, Int>)
+        val cartProducts  = arguments?.getSerializable("cart")as HashMap<Product, Int>
+        viewModel.cartProducts.clear()
+        viewModel.cartProducts.putAll(cartProducts)
+        adapter= ProductAdapter(viewModel.cartProducts)
+
         visible = true
 
         with(binding) {

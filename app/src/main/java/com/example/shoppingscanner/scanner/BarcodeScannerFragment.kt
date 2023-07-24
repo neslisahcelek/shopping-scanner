@@ -17,23 +17,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.example.shoppingscanner.cart.CartFragment
 import com.example.shoppingscanner.R
+import com.example.shoppingscanner.cart.CartFragment
 import com.example.shoppingscanner.databinding.FragmentBarcodeScannerBinding
-import com.example.shoppingscanner.model.Contributor
 import com.example.shoppingscanner.model.Product
-import com.example.shoppingscanner.model.Review
-import com.example.shoppingscanner.model.Shipping
-import com.example.shoppingscanner.model.Store
-import com.example.shoppingscanner.model.Tax
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class BarcodeScannerFragment : Fragment() {
     @Suppress("InlinedApi")
     private var visible: Boolean = false
@@ -64,8 +62,7 @@ class BarcodeScannerFragment : Fragment() {
 
     private var product: Product? = null
 
-    //private val viewModel: ProductViewModel by viewModels()
-    private lateinit var viewModel: ProductViewModel
+    private val viewModel: ProductViewModel by viewModels()
     private val binding get() = _binding!!
 
     val CAMERA_PERMISSION_REQUEST_CODE =100
@@ -90,14 +87,12 @@ class BarcodeScannerFragment : Fragment() {
 
         buyNowButton = binding.btnbuynow
         addToCartButton = binding.btnaddtocart
-
         barcodeScannerOptions = BarcodeScannerOptions.Builder()
             .setBarcodeFormats(
                 Barcode.FORMAT_ALL_FORMATS)
             .build()
         barcodeScanner = BarcodeScanning.getClient(barcodeScannerOptions!!)
 
-        viewModel = ViewModelProvider(requireActivity())[ProductViewModel::class.java]
 
         return binding.root
 
@@ -265,6 +260,9 @@ class BarcodeScannerFragment : Fragment() {
     fun navigate(){
         Log.d("navigate","navigating")
             val fragment = CartFragment()
+        fragment.arguments = Bundle().apply {
+            putSerializable("cart",viewModel.cartProducts)
+        }
             setVisibility()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.barcodeScannerFragment, fragment)
