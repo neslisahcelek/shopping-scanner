@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.example.shoppingscanner.adapter.ProductAdapter
 import com.example.shoppingscanner.databinding.FragmentPaymentCompletedBinding
+import com.example.shoppingscanner.model.CartProduct
 import com.example.shoppingscanner.model.Product
 import com.example.shoppingscanner.viewmodel.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +27,7 @@ class PaymentCompletedFragment : Fragment() {
 
     private var _binding: FragmentPaymentCompletedBinding? = null
     private val binding get() = _binding!!
+    private lateinit var product:CartProduct
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,9 +45,12 @@ class PaymentCompletedFragment : Fragment() {
 
         val cartProducts  = viewModel.cartProducts
         viewModel.cartProducts.clear()
-        viewModel.cartProducts.putAll(cartProducts)
         adapter= ProductAdapter(viewModel.cartProducts)
 
+        arguments.let {
+            product = PaymentCompletedFragmentArgs.fromBundle(it!!).cart
+        }
+        viewModel.cartProducts.put(product, product.quantity)
         visible = true
 
         with(binding) {

@@ -1,4 +1,10 @@
 package com.example.shoppingscanner.model
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.versionedparcelable.ParcelField
+import kotlinx.parcelize.Parceler
+import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 import org.simpleframework.xml.Element
 import org.simpleframework.xml.Root
 
@@ -40,6 +46,14 @@ data class Product(
     var stores: List<Store>?,
     val reviews: List<Review>?
 )
+@Parcelize
+data class CartProduct(
+    val title: String?,
+    val price: String?,
+    val image:String?,
+    val quantity: Int
+):Parcelable
+
 
 data class Contributor(
     val role: String?,

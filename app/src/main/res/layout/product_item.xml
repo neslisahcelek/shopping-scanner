@@ -5,7 +5,7 @@
     <data>
         <variable
             name="product"
-            type="com.example.shoppingscanner.model.Product" />
+            type="com.example.shoppingscanner.model.CartProduct" />
     </data>
 
     <LinearLayout
@@ -58,7 +58,7 @@
             android:layout_weight="1"
             android:gravity="start|center_vertical"
             android:hint="20₺"
-            android:text='@{product.stores[0].price != null ? @string/price_with_currency(product.stores[0].price) : "0₺"}'
+            android:text='@{product.price != null ? @string/price_with_currency(product.price) : "0₺"}'
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold">

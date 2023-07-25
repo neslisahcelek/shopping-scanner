@@ -4,10 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppingscanner.databinding.ProductItemBinding
+import com.example.shoppingscanner.model.CartProduct
 import com.example.shoppingscanner.model.Product
 import com.squareup.picasso.Picasso
 
-class ProductAdapter (private val data: HashMap<Product, Int>):
+class ProductAdapter (private val data: HashMap<CartProduct, Int>):
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
 
     lateinit var binding: ProductItemBinding
@@ -28,7 +29,7 @@ class ProductAdapter (private val data: HashMap<Product, Int>):
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
             holder.itemView.apply {
                 binding.product = data.entries.elementAt(position).key
-                val productImage = data.entries.elementAt(position).key.images!![0]
+                val productImage = data.entries.elementAt(position).key.image
                 Picasso.get().load(productImage).into(binding.productImage)
             }
     }

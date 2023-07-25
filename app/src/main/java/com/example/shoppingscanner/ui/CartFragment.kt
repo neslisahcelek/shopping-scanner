@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.example.shoppingscanner.adapter.ProductAdapter
 import com.example.shoppingscanner.databinding.FragmentCartBinding
-import com.example.shoppingscanner.model.Product
+import com.example.shoppingscanner.model.CartProduct
 import com.example.shoppingscanner.viewmodel.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -29,7 +29,9 @@ class CartFragment : Fragment() {
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var product: CartProduct
     private val viewModel: ProductViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,10 +47,13 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val cartProducts  = viewModel.cartProducts
         viewModel.cartProducts.clear()
-        viewModel.cartProducts.putAll(cartProducts)
+        arguments?.let {
+            product = CartFragmentArgs.fromBundle(it).cart
+        }
+        viewModel.cartProducts.put(product, product.quantity)
         adapter= ProductAdapter(viewModel.cartProducts)
+
 
         visible = true
         Log.d("cart", "onViewCreated: ${viewModel.cartProducts} ")
@@ -68,7 +73,7 @@ class CartFragment : Fragment() {
     }
 
     private fun navigateToPay(view: View) {
-        val intent = CartFragmentDirections.actionCartFragmentToPaymentCompletedFragment()
+        val intent = CartFragmentDirections.actionCartFragmentToPaymentCompletedFragment(product)
         Navigation.findNavController(view).navigate(intent)
     }
 

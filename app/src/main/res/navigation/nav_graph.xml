@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_cartFragment_to_paymentCompletedFragment"
             app:destination="@id/paymentCompletedFragment" />
+        <argument
+            android:name="cart"
+            app:argType="com.example.shoppingscanner.model.CartProduct" />
     </fragment>
     <fragment
         android:id="@+id/paymentCompletedFragment"
@@ -48,5 +51,8 @@
         <action
             android:id="@+id/action_paymentCompletedFragment_to_barcodeScannerFragment"
             app:destination="@id/barcodeScannerFragment" />
+        <argument
+            android:name="cart"
+            app:argType="com.example.shoppingscanner.model.CartProduct" />
     </fragment>
 </navigation>

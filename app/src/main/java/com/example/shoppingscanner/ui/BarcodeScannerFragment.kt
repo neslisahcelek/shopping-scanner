@@ -1,9 +1,7 @@
 package com.example.shoppingscanner.ui
 
-import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -15,13 +13,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavDirections
 import androidx.navigation.Navigation
-import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentBarcodeScannerBinding
-import com.example.shoppingscanner.model.Product
+import com.example.shoppingscanner.model.CartProduct
 import com.example.shoppingscanner.viewmodel.ProductViewModel
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -59,7 +56,7 @@ class BarcodeScannerFragment : Fragment() {
     private var imageBitmap:Bitmap? = null
     private val REQUEST_IMAGE_CAPTURE=1
 
-    private var product: Product? = null
+    private var product: CartProduct? = null
 
     private val viewModel: ProductViewModel by viewModels()
     private val binding get() = _binding!!
@@ -117,12 +114,12 @@ class BarcodeScannerFragment : Fragment() {
 
     }
 
-    private fun addtoCart(product: Product) {
+    private fun addtoCart(product: CartProduct) {
         Log.d("addtoCart", "addtoCart: $product")
 
         var productPrice=0.0
         try{
-            productPrice = product.stores?.get(0)?.price?.toDouble()!!
+            productPrice = product.price?.toDouble()!!
         }catch (e:Exception){
             Log.e("Error",e.message.toString())
         }
@@ -204,7 +201,13 @@ class BarcodeScannerFragment : Fragment() {
         viewModel.product.observe(viewLifecycleOwner) { product ->
             product?.let {
                 Log.d("observe product", product.toString())
-                this.product=product
+                val cartProduct = CartProduct(
+                    title = product.title,
+                    price = product.stores?.get(0)?.price.toString(),
+                    image = product.images?.get(0),
+                    quantity = 0
+                )
+                this.product=cartProduct
                 val productName = product.title
                 var productPrice = "0.0"
                 try {
@@ -224,7 +227,7 @@ class BarcodeScannerFragment : Fragment() {
 
 
     fun navigate(view:View){
-        val intent = BarcodeScannerFragmentDirections.actionBarcodeScannerFragmentToCartFragment()
+        val intent:NavDirections = BarcodeScannerFragmentDirections.actionBarcodeScannerFragmentToCartFragment(product!!)
         Navigation.findNavController(view).navigate(intent)
     }
 

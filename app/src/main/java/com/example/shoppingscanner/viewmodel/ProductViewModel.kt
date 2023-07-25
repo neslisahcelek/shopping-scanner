@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.shoppingscanner.model.CartProduct
 import com.example.shoppingscanner.model.Product
 import com.example.shoppingscanner.model.ProductResponse
 import com.example.shoppingscanner.network.BarcodeRepository
@@ -19,7 +20,7 @@ class ProductViewModel @Inject constructor(
    private val barcodeRepository: BarcodeRepository
 ) : ViewModel() {
 
-    val cartProducts = HashMap< Product,Int>()
+    val cartProducts = HashMap<CartProduct,Int>()
 
     private val _product = MutableLiveData<Product>()
     val product: LiveData<Product>
