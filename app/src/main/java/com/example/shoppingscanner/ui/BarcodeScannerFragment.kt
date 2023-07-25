@@ -103,7 +103,7 @@ class BarcodeScannerFragment : Fragment() {
 
         visible = true
 
-        takeImage()
+        startCamera()
 
         buyNowButton?.setOnClickListener(){
             Log.d("buyNowButton", "buyNowButton: $product")
@@ -142,39 +142,7 @@ class BarcodeScannerFragment : Fragment() {
         Log.d("addtoCart", "products: ${viewModel.cartProducts}")
     }
 
-    private fun takeImage() {
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            startCamera()
-        } else {
-            requestCameraPermission()
-        }
-    }
 
-    private fun requestCameraPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(Manifest.permission.CAMERA),
-            CAMERA_PERMISSION_REQUEST_CODE
-        )
-    }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        Log.d("camera permission","start")
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == CAMERA_PERMISSION_REQUEST_CODE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Log.d("camera permission", "granted")
-            startCamera()
-        } else {
-            showToast("Camera permission denied.")
-        }
-    }
     private fun startCamera() {
         Log.d("start camera", "start")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -196,11 +164,10 @@ class BarcodeScannerFragment : Fragment() {
                 Log.d("onactivityresult","Image not null")
                 processImage()
             }else{
-                takeImage()
+                startCamera()
             }
         }
     }
-
 
 
     private fun processImage() {
@@ -212,7 +179,7 @@ class BarcodeScannerFragment : Fragment() {
 
                     if (barcodes.toString() == "[]") {
                         showToast("Please try again.")
-                        takeImage()
+                        startCamera()
                     }
 
                     for (barcode in barcodes) {

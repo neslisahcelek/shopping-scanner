@@ -1,6 +1,12 @@
 package com.example.shoppingscanner.ui
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +14,13 @@ import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.example.shoppingscanner.R
 import com.example.shoppingscanner.databinding.FragmentContinueWithBarcodeBinding
+import com.google.android.material.button.MaterialButton
 
 
 class ContinueWithBarcodeFragment : Fragment() {
@@ -32,41 +41,57 @@ class ContinueWithBarcodeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         _binding = FragmentContinueWithBarcodeBinding.inflate(inflater, container, false)
-        return binding.root
+        continueWithBarcodeButton = binding.btncontinuewithbarcode
+        (continueWithBarcodeButton as MaterialButton).setOnClickListener(){
+            onclick(it)
+        }
 
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         visible = true
-
         cardView = binding.cardView
-        continueWithBarcodeButton = binding.btncontinuewithbarcode
-        onclick(continueWithBarcodeButton!!)
+    }
 
-        /*
-         cameraRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (isGranted) {
-                navigateToBarcodeScannerFragment()
+    fun onclick(view:View) {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_DENIED
+        ) {
+            Log.d("permission", "denied ")
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                123
+            )
+        } else {
+            Log.d("permission", "granted ")
+            navigateToBarcodeScannerFragment(view)
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == 123) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d("permission", "granted ")
+                navigateToBarcodeScannerFragment(requireView())
             } else {
-
+                Log.d("permission", "denied ")
             }
         }
-
-         */
-
     }
 
-    fun onclick(button: Button){
-        button.setOnClickListener(){
-            navigateToBarcodeScannerFragment(it)
-            //cameraRequest?.launch(android.Manifest.permission.CAMERA)
-        }
-    }
     fun navigateToBarcodeScannerFragment(view:View) {
+        Log.d("navigate", "to barcode scanner fragment")
         val action = ContinueWithBarcodeFragmentDirections.actionContinueWithBarcodeFragmentToBarcodeScannerFragment()
         Navigation.findNavController(view).navigate(action)
     }
