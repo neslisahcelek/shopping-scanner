@@ -6,6 +6,7 @@
     <style name="ThemeOverlay.ShoppingScanner.FullscreenContainer" parent="">
         <item name="fullscreenBackgroundColor">@color/purple_200</item>
         <item name="fullscreenTextColor">@color/purple_500</item>
+        <item name="colorPrimary">@color/purple_500</item>
         <item name="android:windowActionBar">true</item>
         <item name="android:windowNoTitle">false</item>
     </style>
