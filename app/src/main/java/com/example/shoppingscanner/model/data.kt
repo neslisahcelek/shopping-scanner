@@ -51,7 +51,7 @@ data class CartProduct(
     val title: String?,
     val price: String?,
     val image:String?,
-    val quantity: Int
+    var quantity: Int
 ):Parcelable
 
 

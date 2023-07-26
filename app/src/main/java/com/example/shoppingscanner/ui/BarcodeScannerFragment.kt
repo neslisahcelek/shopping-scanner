@@ -126,13 +126,18 @@ class BarcodeScannerFragment : Fragment() {
         var cart = viewModel.cartProducts
 
         if (cart.get(product) != null) {
-            cart.set(product, cart.get(product)!! + 1)
+            showToast("Ürün miktarı güncellendi!")
+            var quantity = cart.get(product)!! + 1
+            product.quantity = quantity
+                cart.set(product, quantity)
             if (productPrice != null) {
-                productPrice *= cart.get(product)!!
+                productPrice *= quantity!!
                 Log.d("addtoCart", "productPrice: $productPrice")
             }
         }else{
-            cart.put(product, 1)
+            showToast("Ürün sepete eklendi!")
+            product.quantity = 1
+            cart.put(product, product.quantity)
             Log.d("addtoCart", "1 productQuantity: $cart.get(product)")
         }
         totalPriceTextView!!.text = totalPriceText + " " + productPrice + " ₺"
@@ -232,7 +237,7 @@ class BarcodeScannerFragment : Fragment() {
     }
 
     fun showToast(message:String){
-        Toast.makeText(requireContext(),message,Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(),message,Toast.LENGTH_SHORT).show()
     }
 
     override fun onResume() {
